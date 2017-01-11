@@ -28,13 +28,16 @@ if platform?("ubuntu")
     ignore_failure true
   end
 else
-#  execute "Update yum packages" do
-#    user "root"
-#    returns [0]
-#    command "yum update -y"
-#  end
-  log "yum update skipped" do
-     level :info
+  if node['ibm_integration_bus']['yum_update']
+    execute "Update yum packages" do
+      user "root"
+      returns [0]
+      command "yum update -y"
+    end
+  else
+    log "skipping yum update" do
+      level :info
+    end
   end
 end
 
@@ -42,10 +45,16 @@ log "Installing IBM Integration Bus Runtime" do
   level :info
 end
 
+if node['ibm_integration_bus']['clean_install']
 # Remove anything already installed
-iib_remove_components;
-iib_remove_runtime; 
-iib_remove_mq;
+  iib_remove_components;
+  iib_remove_runtime; 
+#  iib_remove_mq;
+else
+  log "skipping removal of installed components" do
+    level :info
+  end
+end
 
 # Set up install environment
 iib_create_user;

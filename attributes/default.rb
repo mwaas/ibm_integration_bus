@@ -16,4 +16,6 @@ default['ibm_integration_bus']['package_name']     = nil
 default['ibm_integration_bus']['account_username'] = "iib"
 default['ibm_integration_bus']['account_password'] = nil
 default['ibm_integration_bus']['iib_nodes']        = nil
+default['ibm_integration_bus']['clean_install']    = false
+default['ibm_integration_bus']['yum_update']       = false
 

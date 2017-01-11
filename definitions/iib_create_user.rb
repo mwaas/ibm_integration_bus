@@ -44,7 +44,8 @@ define :iib_create_user do
   #
   # Ensure the user has a bash profile ready for any environment we need to configure
   #
-  file "#{home}/.bash_profile" do
+#  file "#{home}/.bash_profile" do
+  template "#{home}/.bash_profile" do
     owner "#{username}"
     mode "0755"
     if File.exist?("#{home}/.bash_profile") && File.size("#{home}/.bash_profile") == 0
@@ -53,7 +54,7 @@ define :iib_create_user do
       action :create_if_missing
     end
     #content "# ~/.bash_profile"
-    content "umask 007"
+    source 'IIBProfile.erb'
   end
 end
 
