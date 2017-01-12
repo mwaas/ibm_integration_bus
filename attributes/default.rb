@@ -13,6 +13,10 @@
 ################################################################################
 default['ibm_integration_bus']['package_site_url'] = nil
 default['ibm_integration_bus']['package_name']     = nil
+default['ibm_integration_bus']['cd_username']      = "cdadmin"
+default['ibm_integration_bus']['mft_username']     = "FiibCL1"
+default['ibm_integration_bus']['mq_username']      = "mqm"
+default['ibm_integration_bus']['shared_username']  = "mqdev"
 default['ibm_integration_bus']['account_username'] = "iib"
 default['ibm_integration_bus']['account_password'] = nil
 default['ibm_integration_bus']['iib_nodes']        = nil

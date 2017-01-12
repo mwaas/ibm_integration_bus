@@ -39,7 +39,7 @@ iib_remove_runtime;
 iib_remove_mq;
 
 # Set up install environment
-iib_create_user;
+iib_create_users;
 iib_setup_install_package;
 
 # Do the installs

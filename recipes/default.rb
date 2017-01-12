@@ -56,9 +56,13 @@ else
   end
 end
 
+#Verify pre-requisites
+iib_verify_mq;
+
 # Set up install environment
-iib_create_user;
-iib_setup_install_package;
+iib_create_users;
+iib_create_directories;
+#iib_setup_install_package;
 
 # Do the installs
 #iib_install_mq;
