@@ -57,7 +57,13 @@ else
 end
 
 #Verify pre-requisites
-iib_verify_mq;
+if node['ibm_integration_bus']['skip_mq_check']
+  log "skipping verification of MQ components" do
+    level :info
+  end
+else
+  iib_verify_mq;
+end
 
 # Set up install environment
 iib_create_users;

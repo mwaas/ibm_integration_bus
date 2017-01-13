@@ -19,7 +19,7 @@
 
 define :iib_create_users do
   cdusername  = node['ibm_integration_bus']['cd_username'];
-  mftusername = node['ibm_integration_bus']['mft_username'];
+  mftusername = node['ibm_integration_bus']['mft_base_username'] + node['ibm_integration_bus']['cluster_num'];
   mqusername  = node['ibm_integration_bus']['mq_username'];
   sharedusername = node['ibm_integration_bus']['shared_username'];
   iibusername    = node['ibm_integration_bus']['account_username'];
@@ -41,7 +41,7 @@ define :iib_create_users do
     action :create
     shell '/bin/bash'
     home "/home/#{iibusername}"
-    supports :manage_home=> true
+    manage_home true
     username "#{iibusername}"
     if iibpassword
       password "#{iibpassword}"
@@ -52,24 +52,15 @@ define :iib_create_users do
     action :create
     shell '/bin/bash'
     home "/home/#{cdusername}"
-    supports :manage_home=> true
+    manage_home true
     username "#{cdusername}"
-  end
-
-  user "Create user #{mftusername} for Sterling MFT" do
-    action :create
-    shell '/bin/bash'
-    home "/home/#{mftusername}"
-    supports :manage_home=> true
-    username "#{mftusername}"
-    gid "#{sharedusername}"
   end
 
   user "Create user #{mqusername} for MQ" do
     action :create
     shell '/bin/bash'
     home "/home/#{mqusername}"
-    supports :manage_home=> true
+    manage_home true
     username "#{mqusername}"
   end
 
@@ -77,7 +68,7 @@ define :iib_create_users do
     action :create
     shell '/bin/bash'
     home "/home/#{sharedusername}"
-    supports :manage_home=> true
+    manage_home true
     username "#{sharedusername}"
   end
 
@@ -98,20 +89,30 @@ define :iib_create_users do
 
   group "Create group #{sharedusername} to be used for creating shared resources" do
     group_name "#{sharedusername}"
-    members ["#{iibusername}", "#{mqusername}", "#{cdusername}", "#{sharedusername}", "#{mftusername}"]
+    members ["#{iibusername}", "#{mqusername}", "#{cdusername}", "#{sharedusername}"]
   end 
+
+  user "Create user #{mftusername} for Sterling MFT" do
+    action :create
+    shell '/bin/bash'
+    home "/home/#{mftusername}"
+    manage_home true
+    username "#{mftusername}"
+    gid "#{sharedusername}"
+  end
 
   #
   # Ensure IIB user has a bash profile ready for any environment we need to configure
   #
-  template "#{home}/.bash_profile" do
+  template "#{home}/.profile" do
     owner "#{iibusername}"
-    mode "0755"
-    if File.exist?("#{home}/.bash_profile") && File.size("#{home}/.bash_profile") == 0
-      action :create
-    else
-      action :create_if_missing
-    end
+    group "#{iibusername}"
+    mode "0770"
+#    if File.exist?("#{home}/.profile") && File.size("#{home}/.profile") == 0
+#      action :create
+#    else
+#      action :create_if_missing
+#    end
     source 'IIBProfile.erb'
   end
 end
