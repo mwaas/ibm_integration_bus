@@ -69,6 +69,7 @@ end
 iib_create_users;
 iib_create_directories;
 #iib_setup_install_package;
+iib_install_package;
 
 # Do the installs
 #iib_install_mq;

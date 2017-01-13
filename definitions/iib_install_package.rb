@@ -11,18 +11,20 @@
 #     IBM - initial implementation
 #
 ################################################################################
-# Definition IBM_Integration_Bus::iib_setup_install_package
+# Definition IBM_Integration_Bus::iib_install_package
 # 
 # Unpack and setup the iib instal package
 #
 ################################################################################
 
-define :iib_setup_install_package do
+define :iib_install_package do
 	package_site_url   = node['ibm_integration_bus']['package_site_url'];
         package_name       = node['ibm_integration_bus']['package_name'];
         package_url        = "#{package_site_url}/#{package_name}"; 
         download_path      = "#{Chef::Config[:file_cache_path]}/#{package_name}"; 
-        unpack_dir         = "#{Chef::Config[:file_cache_path]}/iib_installer";
+#        unpack_dir         = "#{Chef::Config[:file_cache_path]}/iib_installer";
+        unpack_dir         = node['ibm_integration_bus']['install_dir'];
+        iibusername        = node['ibm_integration_bus']['account_username'];
 
 	directory "Remove unpacked runtime image if it exists" do
 	  action :delete
@@ -31,6 +33,9 @@ define :iib_setup_install_package do
 	end
 
 	directory "Create directory to unpacked runtime to: #{unpack_dir }" do
+	  user "#{iibusername}"
+	  group "#{iibusername}"
+           mode '0770'
 	  action :create
 	  recursive true
 	  path "#{unpack_dir}"
@@ -61,9 +66,9 @@ define :iib_setup_install_package do
 	  end
 	end
 
-	execute "Unpack runtime image" do
-	  user "root"
-	  command "tar -xzf #{download_path} --strip-components=1 -C #{unpack_dir}"
+	execute "Unpack runtime image into #{unpack_dir} as #{iibusername}" do
+	  user "#{iibusername}"
+	  command "tar -xzf #{download_path} -C #{unpack_dir}"
 	end
 end
 

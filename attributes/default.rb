@@ -12,8 +12,9 @@
 #
 ################################################################################
 
-default['ibm_integration_bus']['package_site_url'] = nil
-default['ibm_integration_bus']['package_name']     = nil
+default['ibm_integration_bus']['package_site_url'] = 'file:///opt/ibm_images/iib'
+default['ibm_integration_bus']['package_name']     = '10.0.0.7-IIB-LINUX64-DEVELOPER.tar.gz'
+default['ibm_integration_bus']['install_dir']      = '/gif/app/mqsi'
 default['ibm_integration_bus']['cluster_num']      = '1'
 default['ibm_integration_bus']['nas_base_mount']   = '/nasfs/mcl'
 default['ibm_integration_bus']['cd_username']      = 'cdadmin'
