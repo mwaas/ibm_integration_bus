@@ -21,6 +21,7 @@ default['ibm_integration_bus']['cd_username']      = 'cdadmin'
 default['ibm_integration_bus']['mft_base_username'] = 'FiibCL'
 default['ibm_integration_bus']['mq_username']      = 'mqm'
 default['ibm_integration_bus']['shared_username']  = 'mqdev'
+default['ibm_integration_bus']['broker_username']  = 'mqbrkrs'
 default['ibm_integration_bus']['account_username'] = 'iib'
 default['ibm_integration_bus']['account_password'] = nil
 default['ibm_integration_bus']['iib_nodes']        = nil

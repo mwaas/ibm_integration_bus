@@ -46,6 +46,8 @@ define :iib_install_package do
         end
 
 	remote_file "Download the install image package from: #{package_url} to: #{download_path}"  do
+	  owner "#{iibusername}"
+	  group "#{iibusername}"
 	  path "#{download_path}"
 	  source "#{package_url}"
 	  retries 30
@@ -68,7 +70,19 @@ define :iib_install_package do
 
 	execute "Unpack runtime image into #{unpack_dir} as #{iibusername}" do
 	  user "#{iibusername}"
+	  group "#{iibusername}"
 	  command "tar -xzf #{download_path} -C #{unpack_dir}"
 	end
+
+	execute "Install IIB in silent mode as root" do
+          user 'root'
+	  command "#{unpack_dir}/iib-10.0.0.7/iib make registry global accept license silently"
+	end
+
+        execute "Change all file and directory ownership recursively for #{unpack_dir}/iib-10.0.0.7" do
+          user 'root'
+	  command "chown -R #{iibusername}:#{iibusername} #{unpack_dir}/iib-10.0.0.7"
+        end
+
 end
 

@@ -22,6 +22,7 @@ define :iib_create_users do
   mftusername = node['ibm_integration_bus']['mft_base_username'] + node['ibm_integration_bus']['cluster_num'];
   mqusername  = node['ibm_integration_bus']['mq_username'];
   sharedusername = node['ibm_integration_bus']['shared_username'];
+  brokerusername = node['ibm_integration_bus']['broker_username'];
   iibusername    = node['ibm_integration_bus']['account_username'];
   iibpassword    = node['ibm_integration_bus']['account_password'];
   home  = "/home/#{iibusername}"
@@ -90,6 +91,11 @@ define :iib_create_users do
   group "Create group #{sharedusername} to be used for creating shared resources" do
     group_name "#{sharedusername}"
     members ["#{iibusername}", "#{mqusername}", "#{cdusername}", "#{sharedusername}"]
+  end 
+
+  group "Create group #{brokerusername} to be used for creating shared IIB Broker resources" do
+    group_name "#{brokerusername}"
+    members ["#{iibusername}", "#{mqusername}"]
   end 
 
   user "Create user #{mftusername} for Sterling MFT" do
