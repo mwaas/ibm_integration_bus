@@ -1,19 +1,7 @@
-################################################################################
-#
-# Copyright (c) 2013 IBM Corporation and other Contributors
-#
-# All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
-# which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM - initial implementation
-#
 #################################################################################
 # Definition IBM_Integration_Bus::iib_create_users
 # 
-# Create a user account for running IIB
+# Create users and groups needed for running IIB
 #
 ################################################################################
 
@@ -25,11 +13,8 @@ define :iib_create_users do
   brokerusername = node['ibm_integration_bus']['broker_username'];
   iibusername    = node['ibm_integration_bus']['account_username'];
   iibpassword    = node['ibm_integration_bus']['account_password'];
-  home  = "/home/#{iibusername}"
+  home           = "/home/#{iibusername}"
 
-  #
-  # Install shadow ruby as chef requires this to handle passwords
-  #
   if iibpassword
     gem_package "Install shadow ruby to support user name passwords" do
       package_name 'ruby-shadow'
@@ -108,7 +93,7 @@ define :iib_create_users do
   end
 
   #
-  # Ensure IIB user has a bash profile ready for any environment we need to configure
+  # Ensure IIB user has a profile ready for any environment we need to configure
   #
   template "#{home}/.profile" do
     owner "#{iibusername}"

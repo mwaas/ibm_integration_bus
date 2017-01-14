@@ -1,17 +1,5 @@
 #! /bin/sh
-################################################################################
-#
-# Copyright (c) 2013 IBM Corporation and other Contributors
-#
-# All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
-# which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM - initial implementation
-#
-################################################################################
+
 ### BEGIN INIT INFO
 # Provides:          IBM Integration Bus Node 
 # Required-Start:    $remote_fs $syslog
@@ -24,8 +12,8 @@
 ### END INIT INFO
 
 test -x /opt/mqm/bin/endmqm
-test -x /opt/ibm/mqsi/9.0/bin/mqsistart
-test -x /opt/ibm/mqsi/9.0/bin/mqsistop
+test -x /opt/ibm/mqsi/iib-10.0.0.7/server/bin/mqsistart
+test -x /opt/ibm/mqsi/iib-10.0.0.7/server/bin/mqsistop
 
 #
 # Function that starts the daemon/service
@@ -34,7 +22,8 @@ do_start()
 {
 	sudo su - <%= @user_name %> -c 'mqsistart <%= @node_name %> '
 <%= @qmgr_listener_comment %>    sudo su - <%= @user_name %> -c 'runmqlsr -m <%= @qmgr_name %> -t TCP -p <%= @qmgr_listener_port %> &'
-	return "0"
+#	return "0"
+	return $?
 }
 
 #
@@ -45,7 +34,8 @@ do_stop()
     sudo su - <%= @user_name %> -c 'mqsistop <%= @node_name %> '
 <%= @qmgr_listener_comment %>    sudo su - <%= @user_name %> -c 'endmqlsr -m <%= @qmgr_name %>  -t TCP -p <%= @qmgr_listener_port %> '
     sudo su - <%= @user_name %> -c 'endmqm -i <%= @qmgr_name %> ' 
-	return "0"
+#	return "0"
+	return $?
 }
 
 case "$1" in

@@ -1,17 +1,5 @@
 ################################################################################
 #
-# Copyright (c) 2013 IBM Corporation and other Contributors
-#
-# All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
-# which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM - initial implementation
-#
-################################################################################
-#
 # Recipe IBM_Integratiom_Bus::default
 #
 # Installs all components required by IBM Integration Bus.
@@ -28,16 +16,11 @@ if platform?("ubuntu")
     ignore_failure true
   end
 else
-  if node['ibm_integration_bus']['yum_update']
-    execute "Update yum packages" do
-      user "root"
-      returns [0]
-      command "yum update -y"
-    end
-  else
-    log "skipping yum update" do
-      level :info
-    end
+  execute "Update yum packages" do
+    user 'root'
+    returns [0]
+    command "yum update -y"
+    ignore_failure true
   end
 end
 
@@ -51,60 +34,54 @@ if node['ibm_integration_bus']['clean_install']
   iib_remove_runtime; 
 #  iib_remove_mq;
 else
-  log "skipping removal of installed components" do
+  log "clean_install set to false. Skipping removal of installed components" do
     level :info
   end
 end
 
 #Verify pre-requisites
-if node['ibm_integration_bus']['skip_mq_check']
-  log "skipping verification of MQ components" do
-    level :info
-  end
-else
-  iib_verify_mq;
-end
+iib_verify_mq;
 
 # Set up install environment
 iib_create_users;
 iib_create_directories;
 #iib_setup_install_package;
-iib_install_package;
 
 # Do the installs
 #iib_install_mq;
 #iib_install_runtime;
 #iib_install_explorer;
+iib_install_package;
+iib_verify_installation;
 
 # Set up the system
 #iib_tune_os;
-#iib_create_nodes;
+iib_create_nodes;
 
 log "Finished installing IBM Integration Bus Runtime" do
   level :info
 end
 
-log "Installing IBM Integration Toolkit" do
-  level :info
-end
-
+#log "Installing IBM Integration Toolkit" do
+#  level :info
+#end
 #iib_install_toolkit;
-
-log "Finished installing IBM Integration Toolkit " do
-  level :info
-end
+#log "Finished installing IBM Integration Toolkit " do
+#  level :info
+#end
 
 #iib_remove_install_package;
 
-log "Finshed installing full development environment for IBM Integration Bus" do
-  level :info
-end
-log "To start using the IBM Integration Bus login as user #{node['ibm_integration_bus']['account_username']} and start the IBM Integration toolkit either:" do
-  level :info
-end
-log "Run /home/#{node['ibm_integration_bus']['account_username']}/IBM_Integration_Toolkit" do
-  level :info
-end
-log "Or type Integration in the application laucher and select \"IBM Integration Toolkit\"." do
-  level :info
-end
+#log "Finshed installing full development environment for IBM Integration Bus" do
+#  level :info
+#end
+#log "To start using the IBM Integration Bus login as user #{node['ibm_integration_bus']['account_username']} and start the IBM Integration toolkit either:" do
+#  level :info
+#end
+#log "Run /home/#{node['ibm_integration_bus']['account_username']}/IBM_Integration_Toolkit" do
+#  level :info
+#end
+#log "Or type Integration in the application laucher and select \"IBM Integration Toolkit\"." do
+#  level :info
+#end
+

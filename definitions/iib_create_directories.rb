@@ -1,15 +1,3 @@
-################################################################################
-#
-# Copyright (c) 2013 IBM Corporation and other Contributors
-#
-# All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
-# which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM - initial implementation
-#
 #################################################################################
 # Definition IBM_Integration_Bus::iib_create_directories
 # 
@@ -22,8 +10,9 @@ define :iib_create_directories do
   mftusername = node['ibm_integration_bus']['mft_base_username'] + node['ibm_integration_bus']['cluster_num'];
   mqusername  = node['ibm_integration_bus']['mq_username'];
   sharedusername = node['ibm_integration_bus']['shared_username'];
+  brokerusername = node['ibm_integration_bus']['broker_username'];
   iibusername    = node['ibm_integration_bus']['account_username'];
-  nasmount = node['ibm_integration_bus']['nas_base_mount'] + node['ibm_integration_bus']['cluster_num'];
+  nasmount       = node['ibm_integration_bus']['nas_base_mount'] + node['ibm_integration_bus']['cluster_num'];
 
   directory '/gif' do
     owner  "#{iibusername}"
@@ -68,9 +57,9 @@ define :iib_create_directories do
   end 
 
   directory '/gif/data/mqsi' do
-    owner  "#{iibusername}"
-    group "#{iibusername}"
-    mode '0770'
+    owner  'root'
+    group "#{brokerusername}"
+    mode '0775'
     action :create
   end 
 
