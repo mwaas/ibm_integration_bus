@@ -45,7 +45,8 @@ define :iib_create_users do
   user "Create user #{mqusername} for MQ" do
     action :create
     shell '/bin/bash'
-    home "/home/#{mqusername}"
+#    home "/home/#{mqusername}"
+    home "/var/#{mqusername}"
     manage_home true
     username "#{mqusername}"
   end

@@ -8,6 +8,7 @@
 define :iib_create_nodes do
   iibusername = node['ibm_integration_bus']['account_username'];
   iib_nodes   = node['ibm_integration_bus']['iib_nodes'];
+  mqusername = node['ibm_integration_bus']['mq_username'];
 
   # First check to see if the iib_nodes attribute is set. If it is unset then
   # flag that a default configuration setup is required
@@ -179,7 +180,8 @@ define :iib_create_nodes do
              :node_name             => "#{iibnode_name}",
              :qmgr_name             => "#{iibqmgr_name}",
              :qmgr_listener_comment => "#{qmgr_listener_comment}",
-             :qmgr_listener_port    => "#{iibqmgr_port}"
+             :qmgr_listener_port    => "#{iibqmgr_port}",
+             :mq_user_name          => "#{mqusername}"
            })
     end
   
@@ -228,21 +230,46 @@ define :iib_create_nodes do
       command "sudo su - #{iibusername} -c \'mqsicreatebroker #{iibnode_name}  -q #{iibqmgr_name} #{iibnode_httplistener_port_option} #{iibnode_adminSecurity_option}\'"
     end
   
+
     #
     # Configure the IIB node to start at boot time
     #
-    service "Start IIB Node #{iibnode_name}" do
+    service "Enable and start IIB Node #{iibnode_name}" do
       service_name "IIB-#{iibnode_name}"
-      action [:enable,:start]
-#      ignore_failure true
+#      action [:enable,:start]
+      action [:enable]
+      ignore_failure false
     end
   
-    #DEBUG: force start IIB node
+    execute "Start existing IIB service" do
+      user 'root'
+      returns [0,13,19]
+      command "/etc/init.d/IIB-#{iibnode_name} start"
+      ignore_failure false
+    end
+  
+
+#DEBUG: force start MQ queue manager
+    execute "Start MQ queue manager #{iibqmgr_name}" do
+      user 'root'
+      returns [0]
+      command "sudo su - #{mqusername} -c \'strmqm #{iibqmgr_name}\'"
+    end
+
+#DEBUG: force start MQ listener
+    execute "Start MQ listener for queue manager #{iibqmgr_name} on port #{iibqmgr_port}" do
+      user 'root'
+      returns [0]
+      command "sudo su - #{mqusername} -c \'runmqlsr -m #{iibqmgr_name} -p #{iibqmgr_port} &\'"
+    end
+
+#DEBUG: force start IIB node
     execute "Start IIB node #{iibnode_name}" do
       user 'root'
       returns [0]
       command "sudo su - #{iibusername} -c \'mqsistart #{iibnode_name}\'"
     end
+
 
     #
     # set up all the non-default properties

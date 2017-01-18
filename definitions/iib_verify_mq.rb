@@ -7,9 +7,8 @@
 
 define :iib_verify_mq do 
   execute 'Verify MQ 8 installation' do
-    command '/opt/mq8/bin/dspmqver'
+    command '/opt/mqm/bin/dspmqver'
     returns 0
-    ignore_failure true #TODO: remove after MQ is installed
   end
 
 end

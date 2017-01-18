@@ -20,8 +20,8 @@ test -x /opt/ibm/mqsi/iib-10.0.0.7/server/bin/mqsistop
 #
 do_start()
 {
+<%= @qmgr_listener_comment %>    sudo su - <%= @mq_user_name %> -c 'runmqlsr -m <%= @qmgr_name %> -t TCP -p <%= @qmgr_listener_port %> &'
 	sudo su - <%= @user_name %> -c 'mqsistart <%= @node_name %> '
-<%= @qmgr_listener_comment %>    sudo su - <%= @user_name %> -c 'runmqlsr -m <%= @qmgr_name %> -t TCP -p <%= @qmgr_listener_port %> &'
 #	return "0"
 	return $?
 }
@@ -32,7 +32,7 @@ do_start()
 do_stop()
 {
     sudo su - <%= @user_name %> -c 'mqsistop <%= @node_name %> '
-<%= @qmgr_listener_comment %>    sudo su - <%= @user_name %> -c 'endmqlsr -m <%= @qmgr_name %>  -t TCP -p <%= @qmgr_listener_port %> '
+<%= @qmgr_listener_comment %>    sudo su - <%= @mq_user_name %> -c 'endmqlsr -m <%= @qmgr_name %>  -t TCP -p <%= @qmgr_listener_port %> '
     sudo su - <%= @user_name %> -c 'endmqm -i <%= @qmgr_name %> ' 
 #	return "0"
 	return $?
